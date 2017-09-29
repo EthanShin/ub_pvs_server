@@ -37,13 +37,11 @@ def config_function(mac_address, msg):
 def log_function(mac_address, msg):
     print('action_module.py log_function()')
 
-    mac_address = msg.topic.split('/')[-1].upper()
-
     ret = db.device_collection.find_one({'mac':mac_address}, {'_id':1})
     if ret is None :
         return 0
 
-    data = dict(toks.split(':') for toks in msg.payload.decode('utf-8').split(',') if toks)
+    data = json.loads(msg.payload.decode('utf-9'))       
     data['time'] = recode_time()
 
     db.log_collection.insert_one(data.copy())
@@ -61,14 +59,12 @@ def set_function(mac_address, msg):
     ret = db.device_collection.find_one({'mac':mac_address}, {'_id':1})
     if ret is None :
         return 0
-
-    data = dict(toks.split(':') for toks in msg.payload.decode('utf-8').split(',') if toks)
+    
+    data = json.loads(msg.payload.decode('utf-9'))
     for i in range(0, 5):
-        if str(i) not in data:
-            data[str(i)] = 'None'
+        if str(i) not in data['ap']:
+            data['ap'][str(i)] = 'None'
             
-    update = {}
-    update['ap'] = data
-    update['time'] = recode_time()
+    data['time'] = recode_time()
 
-    db.device_collection.update({'mac':mac_address}, {'$set':update.copy()})
+    db.device_collection.update({'mac':mac_address}, {'$set':data.copy()})
