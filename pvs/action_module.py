@@ -18,7 +18,7 @@ def firmware_function(mac_address, msg):
     ret = db.device_collection.find_one({'mac':mac_address}, {'fw':1, '_id':0})
     if(ret):
         print(ret['fw'])
-        return str(ret['fw'])
+        return json.dumps(ret['fw'])
     return 0
 
 
@@ -29,7 +29,7 @@ def config_function(mac_address, msg):
     ret = db.device_collection.find_one({'mac':mac_address}, {'config':1, '_id':0})
     if(ret):
         print(ret['config'])
-        return str(ret['config'])
+        return json.dumps(ret['config'])
     return 0
 
 
