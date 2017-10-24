@@ -35,21 +35,30 @@ def config_function(mac_address, msg):
 
 
 def log_function(mac_address, msg):
-    print('action_module.py log_function()')
+    print('action_module.py log_function()' + msg.payload.decode('utf-8'))
 
-    ret = db.device_collection.find_one({'mac':mac_address}, {'_id':1})
+    ret = db.device_collection.find_one({'mac':mac_address}, {'_id':0, 'fw.fw_ver':1})
     if ret is None :
         return 0
 
-    data = json.loads(msg.payload.decode('utf-9'))       
+    data = json.loads(msg.payload.decode('utf-8'))
     data['time'] = recode_time()
-
     db.log_collection.insert_one(data.copy())
 
+    if data['fw_ver'] == ret['fw']['fw_ver']:
+        data['state'] = 1
+    else:
+        data['state'] = 0
+
+    db.device_collection.update({'mac':mac_address}, {'$set':{'log':data['time'], 'state':data['state']}})
 
 
 def ping_function(mac_address, msg):
-    print('action_module.py ping_function()')
+	print('action_module.py ping_function()')
+	
+	data = json.loads(msg.payload.decode('utf-8'))
+	data['time'] = recode_time()
+	db.ping_collection.insert_one(data.copy())
 
 
 
@@ -60,7 +69,7 @@ def set_function(mac_address, msg):
     if ret is None :
         return 0
     
-    data = json.loads(msg.payload.decode('utf-9'))
+    data = json.loads(msg.payload.decode('utf-8'))
     for i in range(0, 5):
         if str(i) not in data['ap']:
             data['ap'][str(i)] = 'None'

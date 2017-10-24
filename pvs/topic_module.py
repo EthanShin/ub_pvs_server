@@ -9,4 +9,5 @@ sub_set = 'PVS/device/set/'
 subscribe_topics = [sub_firmware+'#', sub_config+'#', sub_log+'#', sub_ping+'#', sub_set+'#']
 
 pub_firmware = 'PVS/server/fw_up/'
-pub_config = 'PVS/server/config/
+pub_config = 'PVS/server/config/'
+
