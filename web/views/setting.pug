@@ -1,0 +1,27 @@
+extends ./layout.pug
+
+block title
+	title #{title}
+
+block content
+	header
+		h1 Basic Setting
+		p Router와 AP의 목록을 입력하거나 초기화할 수 있습니다.
+		hr
+	body(onload='showMenu()', href='javascript:void(0)')
+		form(action='setting/upload' method='post' enctype="multipart/form-data")
+			fieldset
+				legend Device List Upload
+				input(type='file' name='list_file')
+				input(type='submit' name='Upload')
+		br
+		form(action='setting/drop' method='post')
+			fieldset
+				legend Device List Reset
+				input(type='submit' name='Remove')
+		br
+		script.
+			function showMenu() {
+				var menu = document.getElementById('settingMenu');
+				menu.className += " w3-show";
+			}

@@ -1,0 +1,80 @@
+doctype html
+html
+	head
+		block title
+	body
+		header
+			meta(charset='UTF-8')
+			meta(name='viewport', content='width=device-width, initial-scale=1')
+			link(type='text/css', rel='stylesheet', href='/css/w3.css')
+			link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Roboto')
+			link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Montserrat')
+			link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css')
+			style.
+				.w3-sidebar a {font-family: "Roboto", sans-serif}
+				body,h1,h2,h3,h4,h5,h6,.w3-wide {font-family: "Montserrat", sans-serif;}
+			link(rel='stylesheet', type='text/css', href='/css/jquery.dataTables.min.css')
+			style.init(type='text/css').
+			script(type='text/javascript', language='javascript', src='/javascripts/jquery-1.12.4.js')
+			script(type='text/javascript', language='javascript', src='/javascripts/jquery.dataTables.min.js')
+			script.init(type='text/javascript').
+				$(document).ready(function() {
+					$('#example').DataTable( {
+						"pagingType": "full_numbers"
+					} );
+				} );
+			body.w3-content(style='max-width:1200px')
+				// Sidebar/menu
+				nav#mySidebar.w3-sidebar.w3-bar-block.w3-white.w3-collapse.w3-top(style='z-index:3;width:250px')
+					.w3-container.w3-display-container.w3-padding-16
+						i.fa.fa-remove.w3-hide-large.w3-button.w3-display-topright(onclick='w3_close()')
+						h3.w3-wide
+							b UB
+					.w3-padding-64.w3-large.w3-text-grey(style='font-weight:bold')
+						a.w3-bar-item.w3-button(href='/') Home
+						a#deviceBtn.w3-bar-item.w3-button(onclick='accFunction("deviceMenu")', href='javascript:void(0)')
+							| Device 
+							i.fa.fa-caret-down
+						#deviceMenu.w3-bar-block.w3-hide.w3-padding-large.w3-medium
+							a.w3-bar-item.w3-button(href='/router') Router
+							a.w3-bar-item.w3-button(href='/ap') AP
+						a#settingBtn.w3-bar-item.w3-button(onclick='accFunction("settingMenu")', href='javascript:void(0)')
+							| Setting 
+							i.fa.fa-caret-down
+						#settingMenu.w3-bar-block.w3-hide.w3-padding-large.w3-medium
+							a.w3-bar-item.w3-button(href='/setting') Basic
+							a.w3-bar-item.w3-button(href='/router/setting') Router
+							a.w3-bar-item.w3-button(href='/ap/setting') AP
+				// Top menu on small screens
+				header.w3-bar.w3-top.w3-hide-large.w3-black.w3-xlarge
+					.w3-bar-item.w3-padding-24.w3-wide UB
+					a.w3-bar-item.w3-button.w3-padding-24.w3-right(href='javascript:void(0)', onclick='w3_open()')
+						i.fa.fa-bars
+				// Overlay effect when opening sidebar on small screens
+				#myOverlay.w3-overlay.w3-hide-large(onclick='w3_close()', style='cursor:pointer', title='close side menu')
+	.w3-main(style='margin-left:250px')
+		.w3-hide-large(style='margin-top:105px')
+		.w3-margin-top()
+
+		block content
+
+		block append scripts
+			script.
+				// Accordion
+				function accFunction(parameter) {
+					var x = document.getElementById(parameter);
+					if (x.className.indexOf("w3-show") == -1) {
+						x.className += " w3-show";
+					} else {
+						x.className = x.className.replace(" w3-show", "");
+					}
+				}
+			
+				function w3_open() {
+					document.getElementById("mySidebar").style.display = "block";
+					document.getElementById("myOverlay").style.display = "block";
+				}
+				function w3_close() {
+					document.getElementById("mySidebar").style.display = "none";
+					document.getElementById("myOverlay").style.display = "none";
+				}

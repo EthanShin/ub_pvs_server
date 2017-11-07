@@ -1,0 +1,103 @@
+extends ./layout.pug
+
+block title
+	title #{title}
+
+block content
+	header
+		h1 AP - #{device.mac}
+		p AP의 개별 설정 화면입니다.
+		hr
+	body(onload='showMenu()', href='javascript:void(0)')
+		form(method='post', action=device.mac + '/update')
+			fieldset
+				table
+					tr
+						td MAC 주소:a
+						td
+							input(type='hidden', name='_id', value=device._id.toHexString())
+							input(type='text', name='mac', value=device.mac)
+			br
+			fieldset
+				legend AP 펌웨어 정보
+				table
+					tr
+						td 펌웨어 이름:
+						td
+							input(type='text', name='fw_name', value=device.fw.fw_name)
+					tr
+						td 펌웨어 버전:
+						td
+							input(type='text', name='fw_ver', value=device.fw.fw_ver)
+					tr
+						td 펌웨어 주소:
+						td
+							input(type='text', name='fw_download_path', value=device.fw.fw_download_path)
+					tr
+						td 펌웨어 암호키:
+						td
+							input(type='text', name='fw_md5', value=device.fw.fw_md5)
+			br
+			fieldset
+				legend AP 설정 정보
+				table
+					tr
+						td 동작 모드:
+						td
+							input#bridge(type='radio', name='op_mode', value='0')
+							|   Bridge 
+							input#nat(type='radio', name='op_mode', value='1')
+							|   NAT
+					tr
+						td 네트워크(SSID):
+						td
+							input(type='text', name='ssid', value=device.config.ssid)
+					tr
+						td 암호:
+						td
+							input(type='text', name='password', value=device.config.password)
+					tr
+						td 숨김:
+						td
+							input(type='text', name='hidden', value=device.config.hidden)
+					tr
+						td 모드:
+						td
+							input(type='text', name='mode', value=device.config.mode)
+					tr
+						td bandwidth:
+						td
+							input(type='text', name='bandwidth', value=device.config.bandwidth)
+					tr
+						td 채널:
+						td
+							input(type='text', name='channel', value=device.config.channel)
+					tr
+						td power
+						td
+							input(type='text', name='power', value=device.config.power)
+					tr
+						td PVS 접근 주기:
+						td
+							input(type='text', name='pvs_period', value=device.config.pvs_period)
+			br
+			input(type='submit', value='적용')
+
+
+		script.
+			function showMenu() {
+				var menu = document.getElementById('deviceMenu');
+				menu.className += " w3-show";
+				checkMode();
+			}
+			
+			function checkMode() {
+				value = "#{device.config.op_mode}";
+				if(value == '1') {
+					var nat = document.getElementById('nat');
+					nat.checked = true;
+				} else {
+					var bridge = document.getElementById('bridge');
+					bridge.checked = true;
+				}
+			}

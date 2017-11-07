@@ -1,0 +1,65 @@
+extends ./layout.pug
+
+block title
+	title #{title}
+
+block content
+	header
+		h1 Router Setting
+		p Router의 펌웨어를 등록할 수 있습니다.
+		p 모든 Router의 설정값을 수정할 수 있습니다.
+		hr
+	body(onload='showMenu()', href='javascript:void(0)')
+		form(action='setting/upload' method='post' enctype='multipart/form-data')
+			fieldset
+				legend Router 펌웨어 등록
+				input(type='file' name='router_firmware')
+				input(type='submit' name='Upload')
+				|  현재버전:
+				|  #{device.fw.fw_ver}
+		br
+		form(action='setting/update' method='post')
+			fieldset
+				legend Router 설정 정보
+				table
+					tr
+						td 동작 모드:
+						td
+							input#bridge(type='radio', name='op_mode', value='1') 
+							|	Bridge 
+							input#nat(type='radio', name='op_mode', value='0')
+							|	NAT 
+					tr
+						td IP 주소:
+						td
+							input(type='text', name='ip_addr', value=device.config.ip_addr)
+					tr
+						td 동적 IP 할당 범위:
+						td
+							input(type='text', name='dhcp_client_start', value=device.config.dhcp_client_start)
+							|	~ 	
+							input(type='text', name='dhcp_client_end', value=device.config.dhcp_client_end)
+					tr
+						td PVS 접근 주기:
+						td
+							input(type='text', name='pvs_period', value=device.config.pvs_period)
+				br
+				input(type='submit', value='적용')
+
+		script.
+			function showMenu() {
+				var menu = document.getElementById('settingMenu');
+				menu.className += " w3-show";
+				checkMode();
+			}
+
+			function checkMode() {
+				value = "#{device.config.op_mode}";
+				if(value == '1') {
+					var bridge = document.getElementById('bridge');
+					bridge.checked = true;
+				} else {
+					var nat = document.getElementById('nat');
+					nat.checked = true;
+				}
+			}

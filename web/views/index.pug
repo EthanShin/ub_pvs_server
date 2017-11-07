@@ -1,0 +1,54 @@
+extends ./layout.pug
+
+block title
+	title #{title}
+
+block content
+	header
+		h1 Home
+		p Router와 AP의 세트를 확인할 수 있는 화면입니다.	
+		hr
+	body
+		// Top header
+		header.w3-container.w3-xlarge
+		table#example.display(cellspacing='0', width='100%')
+			thead
+				tr
+					th(rowspan='2') Router
+					th AP1
+					th AP2
+					th AP3
+					th AP4
+					th AP5
+				tr
+					th MAC
+					th MAC
+					th MAC
+					th MAC
+					th MAC
+			tfoot
+				tr
+					th(rowspan='2') Router
+					th AP1
+					th AP2
+					th AP3
+					th AP4
+					th AP5
+				tr
+					th MAC
+					th MAC
+					th MAC
+					th MAC
+					th MAC
+			tbody
+				- for (device in devices)
+					tr
+						td
+							a(href='/router/' + devices[device].mac) #{devices[device].mac}
+						- for (i in devices[device].ap)
+							- if ('None' == devices[device].ap[i])
+								td None
+								
+							- else
+								td
+									a(href='/ap/' + devices[device].ap[i]) #{devices[device].ap[i]}

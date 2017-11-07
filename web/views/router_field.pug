@@ -1,0 +1,90 @@
+extends ./layout.pug
+
+block title
+	title #{title}
+
+block content
+	header
+		h1 Router - #{device.mac}
+		p Router의 개별 설정 화면입니다.
+		hr
+	body(onload='showMenu()', href='javascript:void(0)')
+		form(method='post', action=device.mac + '/update')
+			fieldset
+				table
+					tr
+						td MAC 주소:
+						td
+							input(type='hidden', name='_id', value=device._id.toHexString())
+							input(type='text', name='mac', value=device.mac)
+					tr
+						td 외부 IP :
+						td
+							a(href='http://' + device.wan_ip) #{device.wan_ip}
+							
+			br
+			fieldset
+				legend Router 펌웨어 정보
+				table
+					tr
+						td 펌웨어 이름:
+						td
+							input(type='text', name='fw_name', value=device.fw.fw_name)
+					tr
+						td 펌웨어 버전:
+						td
+							input(type='text', name='fw_ver', value=device.fw.fw_ver)
+					tr
+						td 펌웨어 주소:
+						td
+							input(type='text', name='fw_download_path', value=device.fw.fw_download_path)
+					tr
+						td 펌웨어 암호키:
+						td
+							input(type='text', name='fw_md5', value=device.fw.fw_md5)
+			br
+			fieldset
+				legend Router 설정 정보
+				table
+					tr
+						td 동작 모드:
+						td
+							input#bridge(type='radio', name='op_mode', value='1')
+							|   Bridge 
+							input#nat(type='radio', name='op_mode', value='0')
+							|   NAT
+					tr
+						td IP 주소:
+						td
+							input(type='text', name='ip_addr', value=device.config.ip_addr)
+					tr
+						td 동적 IP 할당 범위:
+						td
+							input(type='text', name='dhcp_client_start', value=device.config.dhcp_client_start)
+							|   ~
+							input(type='text', name='dhcp_client_end', value=device.config.dhcp_client_end)
+					tr
+						td PVS 접근 주기:
+						td
+							input(type='text', name='pvs_period', value=device.config.pvs_period)
+			br
+			input(type='submit', name='update', value='적용', style='margin-right: 16px')
+			input(type='submit', name='reboot', value='재시작')
+
+		script.
+			function showMenu() {
+				var menu = document.getElementById('deviceMenu');
+				menu.className += " w3-show";
+				checkMode();
+			}
+
+			function checkMode() {
+				value = "#{device.config.op_mode}";
+				if(value == '1') {
+					var bridge = document.getElementById('bridge');
+					bridge.checked = true;
+				} else {
+					var nat = document.getElementById('nat');
+					nat.checked = true;
+				}
+			}
