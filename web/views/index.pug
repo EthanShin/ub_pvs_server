@@ -14,32 +14,20 @@ block content
 		table#example.display(cellspacing='0', width='100%')
 			thead
 				tr
-					th(rowspan='2') Router
+					th Router
 					th AP1
 					th AP2
 					th AP3
 					th AP4
 					th AP5
-				tr
-					th MAC
-					th MAC
-					th MAC
-					th MAC
-					th MAC
 			tfoot
 				tr
-					th(rowspan='2') Router
+					th Router
 					th AP1
 					th AP2
 					th AP3
 					th AP4
 					th AP5
-				tr
-					th MAC
-					th MAC
-					th MAC
-					th MAC
-					th MAC
 			tbody
 				- for (device in devices)
 					tr
@@ -50,5 +38,6 @@ block content
 								td None
 								
 							- else
-								td
-									a(href='/ap/' + devices[device].ap[i]) #{devices[device].ap[i]}
+								td #{devices[device].ap[i]['ssid']}
+									div 
+										a(href='/ap/' + devices[device].ap[i]['mac']) #{devices[device].ap[i]['mac']}

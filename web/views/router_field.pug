@@ -16,7 +16,7 @@ block content
 						td MAC 주소:
 						td
 							input(type='hidden', name='_id', value=device._id.toHexString())
-							input(type='text', name='mac', value=device.mac)
+							input#macAddr(type='text', name='mac', value=device.mac)
 					tr
 						td 외부 IP :
 						td
@@ -69,7 +69,13 @@ block content
 							input(type='text', name='pvs_period', value=device.config.pvs_period)
 			br
 			input(type='submit', name='update', value='적용', style='margin-right: 16px')
-			input(type='submit', name='reboot', value='재시작')
+
+		form(action=device.mac + '/reboot' method='post')
+			fieldset
+				legend Device List Reset
+				input(type='hidden', name='mac', value=device.mac)
+				input(type='submit', name='reboot', value='재시작')
+		br
 
 		script.
 			function showMenu() {

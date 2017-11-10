@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
+var PythonShell = require('python-shell');
 var multer = require('multer');
 
 var storage = multer.diskStorage({
@@ -104,6 +105,14 @@ router.post('/:mac/update', function(req, res) {
 		}
 	}, function(error, docs) {
 		if(error) console.log(error);
+	});
+
+	var opt = {
+		args: req.body.mac
+	}
+	PythonShell.run('public/python/submit_config.py', opt, function(error, results) {
+		if(error) console.log(error);
+			console.log(results);
 	});
 	res.redirect('/ap');
 });

@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
+var PythonShell = require('python-shell');
 var multer = require('multer');
 
 var storage = multer.diskStorage({
@@ -25,7 +26,6 @@ var upload = multer({storage: storage}).single('router_firmware')
 
 /* GET home page. */
 router.get('/', function(req, res) {
-	console.log(Date.now())
     deviceProvider.find('device', JSON.parse('{"device": "router"}'), function(error, docs) {
         res.render('router', {
             title: 'PVS Server: Router',
@@ -100,6 +100,17 @@ router.post('/:mac/update', function(req, res) {
 	}, function(error, docs) {
 		if(error) console.log(error);
 	});
+	res.redirect('/router');
+});
+
+router.post('/:mac/reboot', function(req, res) {
+	var opt = {
+        args: req.body.mac
+    }
+    PythonShell.run('public/python/reboot_device.py', opt, function(error, results) {
+        if(error) console.log(error);
+            console.log(results);
+    });
 	res.redirect('/router');
 });
 

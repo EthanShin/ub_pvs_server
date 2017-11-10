@@ -34,7 +34,10 @@ block content
 						td #{devices[device].fw.fw_ver}
 						td #{devices[device].log}
 						td #{devices[device].lastest}
-						td #{devices[device].state}
+						td#state
+							script
+								document.getElementById('state').innerHTML = '1';
+								
 		script.
 			function showMenu() {
 				var menu = document.getElementById('deviceMenu');

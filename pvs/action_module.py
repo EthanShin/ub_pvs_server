@@ -45,29 +45,42 @@ def config_function(mac_address, msg):
 
 
 def log_function(mac_address, msg):
-    print('action_module.py log_function()\n' + msg.payload.decode('utf-8'))
+	print('action_module.py log_function()\n' + msg.payload.decode('utf-8'))
 
-    ret = db.device_collection.find_one({'mac':mac_address}, {'_id':0, 'fw.fw_ver':1})
-    if ret is None :
-        return 0
+	ret = db.device_collection.find_one({'mac':mac_address}, {'_id':0, 'fw.fw_ver':1, 'host':1})
+	if ret is None :
+		return 0
 
-    data = json.loads(msg.payload.decode('utf-8'))
-    data['time'] = recode_time()
-    db.log_collection.insert_one(data.copy())
+	data = json.loads(msg.payload.decode('utf-8'))
+	data['log'] = recode_time()
+	db.log_collection.insert_one(data.copy())
 
-    if data['fw_ver'] == ret['fw']['fw_ver']:
-        data['lastest'] = 1
-    else:
-        data['lastest'] = 0
+	if data['fw_ver'] == ret['fw']['fw_ver']:
+		data['lastest'] = 1
+	else:
+		data['lastest'] = 0
 
-    db.device_collection.update({'mac':mac_address}, {'$set':{'log':data['time'], 'lastest':data['lastest'], 'wan_ip':data['wan_ip']}})
+	if 'wan_ip' in data :
+		db.device_collection.update({'mac':mac_address}, {'$set':{'log':data['log'], 'lastest':data['lastest'], 'wan_ip':data['wan_ip']}})
+	else :
+		db.device_collection.update({'mac':mac_address}, {'$set':{'log':data['log'], 'lastest':data['lastest']}})
+		if 'host' in ret:
+			for number in range(0, 5) :
+				command = "ap." + str(number) + ".mac"
+				find_host = db.device_collection.find_one({'mac':ret['host'], command:mac_address})
+				if find_host is not None :
+					command = "ap." + str(number) + ".ssid"
+					print(command)
+					db.device_collection.update({'mac':ret['host']}, {'$set':{command:data['ssid']}})
+					break
+	
 
 
 def ping_function(mac_address, msg):
 	print('action_module.py ping_function()')
 	
 	data = json.loads(msg.payload.decode('utf-8'))
-	data['time'] = recode_time()
+	data['log'] = recode_time()
 	db.ping_collection.insert_one(data.copy())
 
 
@@ -85,9 +98,15 @@ def set_function(mac_address, msg):
         if str(i) not in data['ap']:
             data['ap'][str(i)] = 'None'
         else:
-            print(data['ap'][str(i)])
             db.device_collection.update({'mac':data['ap'][str(i)]}, {'$set':{'host':mac_address}})
-            
-    #data['time'] = recode_time()
-    #print(data)
-    #db.device_collection.update({'mac':mac_address}, {'$set':data.copy()})
+            ssid = db.device_collection.find_one({'mac':data['ap'][str(i)]}, {'_id':0, 'config.ssid':1})
+            ap = {
+                'mac': data['ap'][str(i)],
+                'ssid': ssid['config']['ssid']
+            }
+            data['ap'][str(i)] = ap
+
+    data['log'] = recode_time()
+    print("data = ")
+    print(data)
+    db.device_collection.update({'mac':mac_address}, {'$set':data.copy()})
