@@ -13,12 +13,12 @@ block content
 			fieldset
 				legend Device List Upload
 				input(type='file' name='list_file')
-				input(type='submit' name='Upload')
+				input(type='submit' onclick='return clicked("목록을 추가하시겠습니까?")' name='Upload')
 		br
 		form(action='setting/drop' method='post')
 			fieldset
 				legend Device List Reset
-				input(type='submit' name='Remove')
+				input(type='submit', onclick='return clicked("모든 목록이 삭제됩니다. 진행하시겠습니까?")', name='Remove')
 		br
 		script.
 			function showMenu() {

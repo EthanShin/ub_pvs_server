@@ -1,6 +1,10 @@
-var express = require('express');
-var path = require('path');
-var bodyParser = require('body-parser');
+var express			= require('express');
+var path			= require('path');
+var bodyParser		= require('body-parser');
+var passport		= require('passport');
+var localStrategy	= require('passport-local').Strategy;
+var flash			= require('connect-flash')
+var session			= require('express-session');
 
 var DeviceProvider = require('./public/javascripts/deviceProvider-mongodb').DeviceProvider;
  deviceProvider = new DeviceProvider('127.0.0.1', 27017);
@@ -12,14 +16,44 @@ var setting = require('./routes/setting')
 
 var app = express();
 
-// set up handlebars view engine
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
+
+app.use(session({
+	secret: '!@#$%^&*()',
+	saveUninitialized: false,
+	resave: false
+}));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(flash());
+
+passport.use(new localStrategy({
+		usernameField : 'userid',
+		passwordField : 'password',
+		passReqToCallback : true
+	}, function(req, userid, password, done) {
+		if(userid==='baruntech' && password==='barun3760') {
+			var user = { 'userid': 'baruntech' };
+			return done(null, user);
+		} else {
+			return done(null, false);
+		}
+	}
+));
+
+passport.serializeUser(function(user, done) {
+	console.log(user);
+	done(null, user.userid);
+});
+
+passport.deserializeUser(function(user, done) {
+	done(null, user);
+});
 
 app.use('/', routes);
+
 app.use('/router', router);
 app.use('/ap', ap);
 app.use('/setting', setting);
@@ -27,6 +61,10 @@ app.use('/setting', setting);
 app.use(express.static('public'));
 
 app.set('port', process.env.PORT || 15959);
+
+// set up handlebars view engine
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'pug');
 
 // catch 404 and forwarding to error handler
 app.use(function(req, res, next) {
@@ -63,4 +101,3 @@ app.listen(app.get('port'), function() {
     console.log('Express started on http://localhost:' + app.get('port') +
     '; press Ctrl-C to terminate.');
 });
-

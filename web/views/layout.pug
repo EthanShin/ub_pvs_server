@@ -2,27 +2,28 @@ doctype html
 html
 	head
 		block title
+		meta(charset='UTF-8')
+		meta(name='viewport', content='width=device-width, initial-scale=1')
+		link(type='text/css', rel='stylesheet', href='/css/w3.css')
+		link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Roboto')
+		link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Montserrat')
+		link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css')
+		link(rel='stylesheet', href='/css/style.css', type='text/css')
+		style.
+			.w3-sidebar a {font-family: "Roboto", sans-serif}
+			body,h1,h2,h3,h4,h5,h6,.w3-wide {font-family: "Montserrat", sans-serif;}
+		link(rel='stylesheet', type='text/css', href='/css/jquery.dataTables.min.css')
+		style.init(type='text/css').
+		script(type='text/javascript', language='javascript', src='/javascripts/jquery-1.12.4.js')
+		script(type='text/javascript', language='javascript', src='/javascripts/jquery.dataTables.min.js')
+		script.init(type='text/javascript').
+			$(document).ready(function() {
+				$('#example').DataTable( {
+					"pagingType": "full_numbers"
+				} );
+			} );
 	body
 		header
-			meta(charset='UTF-8')
-			meta(name='viewport', content='width=device-width, initial-scale=1')
-			link(type='text/css', rel='stylesheet', href='/css/w3.css')
-			link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Roboto')
-			link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Montserrat')
-			link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css')
-			style.
-				.w3-sidebar a {font-family: "Roboto", sans-serif}
-				body,h1,h2,h3,h4,h5,h6,.w3-wide {font-family: "Montserrat", sans-serif;}
-			link(rel='stylesheet', type='text/css', href='/css/jquery.dataTables.min.css')
-			style.init(type='text/css').
-			script(type='text/javascript', language='javascript', src='/javascripts/jquery-1.12.4.js')
-			script(type='text/javascript', language='javascript', src='/javascripts/jquery.dataTables.min.js')
-			script.init(type='text/javascript').
-				$(document).ready(function() {
-					$('#example').DataTable( {
-						"pagingType": "full_numbers"
-					} );
-				} );
 			body.w3-content(style='max-width:1200px')
 				// Sidebar/menu
 				nav#mySidebar.w3-sidebar.w3-bar-block.w3-white.w3-collapse.w3-top(style='z-index:3;width:250px')
@@ -31,7 +32,7 @@ html
 						h3.w3-wide
 							b UB
 					.w3-padding-64.w3-large.w3-text-grey(style='font-weight:bold')
-						a.w3-bar-item.w3-button(href='/') Home
+						a.w3-bar-item.w3-button(href='/home') Home
 						a#deviceBtn.w3-bar-item.w3-button(onclick='accFunction("deviceMenu")', href='javascript:void(0)')
 							| Device 
 							i.fa.fa-caret-down
@@ -77,4 +78,8 @@ html
 				function w3_close() {
 					document.getElementById("mySidebar").style.display = "none";
 					document.getElementById("myOverlay").style.display = "none";
+				}
+
+				function clicked(e) {
+					return confirm(e);
 				}

@@ -6,7 +6,13 @@ import sys
 import topic_module as topic
 import action_module as action
 
-mqtt_broker = 'www.baruntechpvs.com'
+import subprocess
+
+mqtt_broker = subprocess.check_output('cat ../server_address', shell = True)[0:-1]
+print('server_address:' + mqtt_broker)
+
+
+#mqtt_broker = 'www.baruntechpvs.com'
 
 def on_connect(client, userdata, flags, rc):
 	print("Connected with result code " + str(rc))
@@ -43,6 +49,9 @@ def on_message(client, userdata, msg):
 
 	elif msg.topic.startswith(topic.sub_set):
 		action.set_function(mac_address, msg)
+
+	elif msg.topic.startswith(topic.sub_router_config):
+		action.router_config_function(mac_address, msg)
 
 
 client = mqtt.Client()

@@ -16,6 +16,7 @@ block content
 				tr
 					th MAC
 					th Firmware
+						div 설정 / 현재
 					th Log time
 					th Up-To-Date
 					th State
@@ -31,12 +32,20 @@ block content
 					tr
 						td
 							a(href='/router/' + devices[device].mac) #{devices[device].mac}
-						td #{devices[device].fw.fw_ver}
+						td (#{devices[device].fw.fw_ver}) #{devices[device].last_log.fw_ver}
 						td #{devices[device].log}
-						td #{devices[device].lastest}
-						td#state
-							script
-								document.getElementById('state').innerHTML = '1';
+						if devices[device].lastest == 1
+							td
+								font(color="blue") 최신버전
+						else
+							td
+								font(color="red") 업그레이드 대기
+						if devices[device].state == 1
+							td
+								font(color="blue") 동작중
+						else
+							td
+								font(color="red") 확인요망
 								
 		script.
 			function showMenu() {

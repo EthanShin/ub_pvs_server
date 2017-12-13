@@ -9,12 +9,12 @@ block content
 		p AP의 펌웨어를 등록할 수 있습니다.
 		p 모든 AP의 설정값을 수정할 수 있습니다.
 		hr
-	body(onload='showMenu()', href='javascript:void(0')
+	body(onload='showMenu()', href='javascript:void(0)')
 		form(action='setting/upload' method='post' enctype='multipart/form-data')
 			fieldset
 				legend AP 펌웨어 등록
 				input(type='file' name='ap_firmware')
-				input(type='submit' name='Upload')
+				input(type='submit' onclick='return clicked("펌웨어를 업로드 하시겠습니까?")'  name='Upload')
 				|  현재버전:
 				|  #{device.fw.fw_ver}
 		br
@@ -25,9 +25,9 @@ block content
 					tr
 						td 동작 모드:
 						td
-							input#bridge(type='radio', name='op_mode', value='0')
+							input#opmode0(type='radio', name='op_mode', value='0')
 							|	Bridge 
-							input#nat(type='radio', name='op_mode', value='1')
+							input#opmode1(type='radio', name='op_mode', value='1')
 							|	NAT
 					tr
 						td 네트워크(SSID):
@@ -38,31 +38,57 @@ block content
 						td
 							input(type='text', name='password', value=device.config.password)
 					tr
-						td 숨김:
+						td SSID 숨김:
 						td
-							input#hidden(type='text', name='hidden', value=device.config.hidden)
+							input#hidden0(type='radio', name='hidden', value='0')
+							|   공개 
+							input#hidden1(type='radio', name='hidden', value='1')
+							|	비공개
 					tr
 						td 모드:
 						td
-							input(type='text', name='mode', value=device.config.mode)
+							select#mode(name='mode')
+								option#mode0(value='0') 2.4GHz(b+g)
+								option#mode1(value='1') 2.4GHz(b)
+								option#mode2(value='4') 2.4GHz(g)
+								option#mode9(value='9') 2.4Ghz(b+g+n)
 					tr
-						td bandwidth:
+						td 채널 대역폭:
 						td
-							input(type='text', name='bandwidth', value=device.config.bandwidth)
+							input#bandwidth0(type='radio', name='bandwidth', value='0')
+							|   20MHz 
+							input#bandwidth1(type='radio', name='bandwidth', value='1')
+							|   40MHz (기본값 40MHz)
 					tr
 						td 채널:
 						td
-							input(type='text', name='channel', value=device.config.channel)
+							select#channel(name='channel')
+								option#channel0(value='0') 자동선택
+								option#channel1(value='1') 2412MHz(Channel 1)
+								option#channel2(value='2') 2417MHz(Channel 2)
+								option#channel3(value='3') 2422MHz(Channel 3)
+								option#channel4(value='4') 2427MHz(Channel 4)
+								option#channel5(value='5') 2432MHz(Channel 5)
+								option#channel6(value='6') 2437MHz(Channel 6)
+								option#channel7(value='7') 2442MHz(Channel 7)
+								option#channel8(value='8') 2447MHz(Channel 8)
+								option#channel9(value='9') 2452MHz(Channel 9)
+								option#channel10(value='10') 2457MHz(Channel 10)
+								option#channel11(value='11') 2462MHz(Channel 11)
+								option#channel12(value='12') 2467MHz(Channel 12)
+								option#channel13(value='13') 2472MHz(Channel 13)
 					tr
-						td power:
+						td 송신 출력 지수:
 						td
-							input(type='text', name='power', value=device.config.power)
+							input(type='text', name='power', value=device.config.power, maxlength='3', size='5')
+							|   (범위 1~100, 기본값 100)
 					tr
 						td PVS 접근 주기:
 						td
-							input(type='text', name='pvs_period', value=device.config.pvs_period)
+							input(type='text', name='pvs_period', value=device.config.pvs_period, size='5')
+							|   (일)
 				br
-				input(type='submit', value='적용')
+				input(onclick='return clickedSubmit("변경된 내용으로 저장하시겠습니까?")', type='submit', value='적용')
 
 		script.
 			function showMenu() {
@@ -72,12 +98,39 @@ block content
 			}
 
 			function checkMode() {
+				value = "#{device.config.hidden}";
+				hidden = document.getElementById('hidden' + value);
+				hidden.checked = true;
+
 				value = "#{device.config.op_mode}";
-				if(value == '1') {
-					var nat = document.getElementById('nat');
-					nat.checked = true;
-				} else {
-					var bridge = document.getElementById('bridge');
-					bridge.checked = true;
+				opmode = document.getElementById('opmode' + value);
+				opmode.checked = true;
+
+				value = "#{device.config.bandwidth}";
+				bandwidth = document.getElementById('bandwidth' + value);
+				bandwidth.checked = true;
+
+				value = "#{device.config.channel}";
+				channel = document.getElementById('channel' + value);
+				channel.selected = true;
+
+				value = "#{device.config.mode}";
+				mode = document.getElementById('mode' + value);
+				mode.selected = true;
+			}
+
+			function selectSubmit() {
+				var channel = document.getElementById('channel');
+				channel.value = channel.options[channel.selectedIndex].value;
+
+				var mode = document.getElementById('mode');
+				mode.value = mode.options[mode.selectedIndex].value;
+			}
+
+			function clickedSubmit(e) {
+				if(confirm(e)) {
+					selectSubmit();
+					return true;
 				}
+				return false;
 			}

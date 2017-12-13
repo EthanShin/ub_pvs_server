@@ -16,6 +16,7 @@ block content
 				tr
 					th MAC
 					th Firmware
+						div 설정 / 현재
 					th SSID
 					th Log time
 					th Up-To-Date
@@ -33,11 +34,22 @@ block content
 					tr
 						td
 							a(href='/ap/' + devices[device].mac) #{devices[device].mac}
-						td #{devices[device].fw.fw_ver}
-						td #{devices[device].config.ssid}
+						td (#{devices[device].fw.fw_ver}) #{devices[device].last_log.fw_ver}
+						td #{devices[device].last_log.ssid}
 						td #{devices[device].log}
-						td #{devices[device].lastest}
-						td #{devices[device].state}
+
+						if devices[device].lastest == 1
+							td
+								font(color="blue") 최신버전
+						else
+							td
+								font(color="red") 업그레이드 대기
+						if devices[device].state == 1
+							td
+								font(color="blue") 동작중
+						else
+							td
+								font(color="red") 확인요망
 		script.
 			function showMenu() {
 				var menu = document.getElementById('deviceMenu');

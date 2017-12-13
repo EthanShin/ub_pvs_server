@@ -36,10 +36,11 @@ def firmware_function(mac_address, msg):
 def config_function(mac_address, msg):
     print('action_module.py config_function()')
 
-    ret = db.device_collection.find_one({'mac':mac_address}, {'config':1, '_id':0})
+    ret = db.device_collection.find_one({'mac':mac_address}, {'config':1, '_id':0, 'lastest':1})
     if(ret):
-        print(ret['config'])
-        return json.dumps(ret['config'])
+        if(ret['lastest'] == 1):
+            print(ret['config'])
+            return json.dumps(ret['config'])
     return 0
 
 
@@ -52,6 +53,7 @@ def log_function(mac_address, msg):
 		return 0
 
 	data = json.loads(msg.payload.decode('utf-8'))
+	db.device_collection.update({'mac':mac_address}, {'$set':{'last_log':data}})
 	data['log'] = recode_time()
 	db.log_collection.insert_one(data.copy())
 
@@ -110,3 +112,10 @@ def set_function(mac_address, msg):
     print("data = ")
     print(data)
     db.device_collection.update({'mac':mac_address}, {'$set':data.copy()})
+
+def router_config_function(mac_address, msg):
+	print('action_module.py router_config_function()')
+	print(msg.payload.decode('utf-8'))
+	data = json.loads(msg.payload.decode('utf-8'))
+	
+	db.device_collection.update({'mac':mac_address}, {'$set':{'config.ssid':data['ssid'], 'config.password':data['password'], 'config.mode':data['mode'], 'config.channel':data['channel'], 'config.bandwidth':data['bandwidth'], 'config.power':data['power'], 'config.hidden':data['hidden']}})

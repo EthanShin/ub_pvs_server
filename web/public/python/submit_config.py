@@ -7,6 +7,8 @@ import subprocess
 mac = sys.argv[1]
 mac = mac[:2] + ':' + mac[2:4] + ':' + mac[4:6] + ':' + mac[6:8] + ':' + mac[8:10] + ':' + mac[10:]
 
-command = 'mosquitto_pub -h www.baruntechpvs.com -t PVS/device/config/' + mac + ' -m ""'
+server_address = subprocess.check_output('cat ../server_address', shell = True)[0:-1]
+
+command = 'mosquitto_pub -h ' + server_address + ' -t PVS/device/config/' + mac + ' -m ""'
 print(command)
 subprocess.call(command, shell = True)

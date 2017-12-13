@@ -1,0 +1,27 @@
+doctype html
+html
+	head
+		link(type='text/css', rel='stylesheet', href='/css/w3.css')
+		link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Roboto')
+		link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Montserrat')
+		link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css')
+		link(rel='stylesheet', href='/css/style.css', type='text/css')
+	body
+		form(action='/login' method='post')
+			br
+			br
+			br
+			table(align="center")
+				tr
+					td UB PVS
+				tr
+					td 아이디:
+					td
+						input(type='text' name='userid')
+						
+				tr
+					td 비밀번호:
+					td
+						input(type='password' name='password')
+					td
+						input(type='submit' value='로그인')

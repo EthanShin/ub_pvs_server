@@ -101,7 +101,7 @@ DeviceProvider.prototype.firmware_update = function(file_name, device_type, call
 		
 		var child_process = require('child_process').execSync;
 		md5 = child_process('md5sum /var/www/html/' + file_name + ' | cut -f1 -d\' \'').toString().slice(0, -1);
-		data = {'$set':{'fw.fw_ver':version, 'fw.fw_name':file_name, 'fw.fw_md5':md5}}
+		data = {'$set':{'fw.fw_ver':version, 'fw.fw_name':file_name, 'fw.fw_md5':md5, 'lastest':'0'}}
 		console.log('%j, %j', query, data);
 		
 

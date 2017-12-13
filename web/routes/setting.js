@@ -24,7 +24,7 @@ var storage = multer.diskStorage({
 var upload = multer({storage: storage}).single("list_file");
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/', ensureAuthenticated, function(req, res, next) {
     deviceProvider.find('setPoint', JSON.parse('{}'), function(error, docs) {
         res.render('setting', {
             title: 'PVS Server: Basic Setting',
@@ -71,5 +71,10 @@ router.post('/drop', function(req, res) {
 	});
 	res.redirect('/');
 });
+
+function ensureAuthenticated(req, res, next) {
+    if(req.isAuthenticated()) { return next(); }
+    res.redirect('/');
+}
 
 module.exports = router;

@@ -14,7 +14,7 @@ block content
 			fieldset
 				legend Router 펌웨어 등록
 				input(type='file' name='router_firmware')
-				input(type='submit' name='Upload')
+				input(type='submit' onclick='return clicked("펌웨어를 업로드 하시겠습니까?")' name='Upload')
 				|  현재버전:
 				|  #{device.fw.fw_ver}
 		br
@@ -32,19 +32,20 @@ block content
 					tr
 						td IP 주소:
 						td
-							input(type='text', name='ip_addr', value=device.config.ip_addr)
+							input(type='text', name='ip_addr', value=device.config.ip_addr, size='10', maxlength='15')
 					tr
 						td 동적 IP 할당 범위:
 						td
-							input(type='text', name='dhcp_client_start', value=device.config.dhcp_client_start)
+							input(type='text', name='dhcp_client_start', value=device.config.dhcp_client_start, size='10', maxlength='15')
 							|	~ 	
-							input(type='text', name='dhcp_client_end', value=device.config.dhcp_client_end)
+							input(type='text', name='dhcp_client_end', value=device.config.dhcp_client_end, size='10', maxlength='15')
 					tr
 						td PVS 접근 주기:
 						td
-							input(type='text', name='pvs_period', value=device.config.pvs_period)
+							input(type='text', name='pvs_period', value=device.config.pvs_period, size='5')
+							|   (일)
 				br
-				input(type='submit', value='적용')
+				input(type='submit', onclick='return clicked("변경된 내용으로 저장하시겠습니까?")' value='적용')
 
 		script.
 			function showMenu() {

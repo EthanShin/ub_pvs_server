@@ -10,71 +10,75 @@ block content
 		hr
 	body(onload='showMenu()', href='javascript:void(0)')
 		form(method='post', action=device.mac + '/update')
-			fieldset
-				table
-					tr
-						td MAC 주소:
-						td
-							input(type='hidden', name='_id', value=device._id.toHexString())
-							input#macAddr(type='text', name='mac', value=device.mac)
-					tr
-						td 외부 IP :
-						td
-							a(href='http://' + device.wan_ip) #{device.wan_ip}
+			fieldset 
+				legend 설정
+				fieldset
+					table
+						tr
+							td MAC 주소:
+							td
+								input(type='hidden', name='_id', value=device._id.toHexString())
+								input#macAddr(type='text', name='mac', value=device.mac)
+						tr
+							td 외부 IP :
+							td
+								a(target="_blank", href='http://' + device.wan_ip + ':26118') #{device.wan_ip}
 							
-			br
-			fieldset
-				legend Router 펌웨어 정보
-				table
-					tr
-						td 펌웨어 이름:
-						td
-							input(type='text', name='fw_name', value=device.fw.fw_name)
-					tr
-						td 펌웨어 버전:
-						td
-							input(type='text', name='fw_ver', value=device.fw.fw_ver)
-					tr
-						td 펌웨어 주소:
-						td
-							input(type='text', name='fw_download_path', value=device.fw.fw_download_path)
-					tr
-						td 펌웨어 암호키:
-						td
-							input(type='text', name='fw_md5', value=device.fw.fw_md5)
-			br
-			fieldset
-				legend Router 설정 정보
-				table
-					tr
-						td 동작 모드:
-						td
-							input#bridge(type='radio', name='op_mode', value='1')
-							|   Bridge 
-							input#nat(type='radio', name='op_mode', value='0')
-							|   NAT
-					tr
-						td IP 주소:
-						td
-							input(type='text', name='ip_addr', value=device.config.ip_addr)
-					tr
-						td 동적 IP 할당 범위:
-						td
-							input(type='text', name='dhcp_client_start', value=device.config.dhcp_client_start)
-							|   ~
-							input(type='text', name='dhcp_client_end', value=device.config.dhcp_client_end)
-					tr
-						td PVS 접근 주기:
-						td
-							input(type='text', name='pvs_period', value=device.config.pvs_period)
-			br
-			input(type='submit', name='update', value='적용', style='margin-right: 16px')
+				br
+				fieldset
+					legend Router 펌웨어 정보
+					table
+						tr
+							td(size='15') 펌웨어 이름:
+							td
+								input(type='text', name='fw_name', value=device.fw.fw_name)
+						tr
+							td 펌웨어 버전:
+							td
+								input(type='text', name='fw_ver', value=device.fw.fw_ver)
+						tr
+							td 펌웨어 주소:
+							td
+								input(type='text', name='fw_download_path', value=device.fw.fw_download_path)
+						tr
+							td 펌웨어 암호키:
+							td
+								input(type='text', name='fw_md5', value=device.fw.fw_md5)
+				br
+				fieldset
+					legend Router 설정 정보
+					table
+						tr
+							td 동작 모드:
+							td
+								input#bridge(type='radio', name='op_mode', value='1')
+								|   Bridge 
+								input#nat(type='radio', name='op_mode', value='0')
+								|   NAT
+						tr
+							td IP 주소:
+							td
+								input(type='text', name='ip_addr', value=device.config.ip_addr, maxlength='15', size='10')
+						tr
+							td 동적 IP 할당 범위:
+							td
+								input(type='text', name='dhcp_client_start', value=device.config.dhcp_client_start, maxlength='15', size='10')
+								|   ~
+								input(type='text', name='dhcp_client_end', value=device.config.dhcp_client_end, maxlength='15', size='10')
+						tr
+							td PVS 접근 주기:
+							td
+								input(type='text', name='pvs_period', value=device.config.pvs_period, size='5')
+								|   (일)
+				br
+				input(type='submit', name='update', value='적용', onclick='return clicked("변경된 내용으로 저장하시겠습니까?")')
 
+		br
 		form(action=device.mac + '/reboot' method='post')
 			fieldset
-				legend Device List Reset
+				legend 원격 재시작
 				input(type='hidden', name='mac', value=device.mac)
-				input(type='submit', name='reboot', value='재시작')
+				input(type='submit', onclick='return clicked("재시작하시겠습니까?")' name='reboot', value='재시작')
 		br
 
 		script.

@@ -25,17 +25,22 @@ var storage = multer.diskStorage({
 var upload = multer({storage: storage}).single('router_firmware')
 
 /* GET home page. */
-router.get('/', function(req, res) {
+router.get('/', ensureAuthenticated, function(req, res) {
     deviceProvider.find('device', JSON.parse('{"device": "router"}'), function(error, docs) {
+		for(device in docs) {
+			if(docs[device]['log'] != undefined)
+				if((Date.now() - Date.parse(docs[device]['log'])) < 86400000 * docs[device]['config']['pvs_period']) docs[device]['state'] = 1;
+				else docs[device]['state'] = 0;
+			else docs[device]['state'] = 0;
+		}
         res.render('router', {
             title: 'PVS Server: Router',
             devices: docs,
-			time: Date.now()
         });
     });
 });
 
-router.get('/setting', function(req, res, next) {
+router.get('/setting', ensureAuthenticated, function(req, res, next) {
     deviceProvider.find('setPoint', JSON.parse('{"device":"router"}'), function(error, device) {
         res.render('setting_router', {
             title: 'PVS Server: Setting',
@@ -44,7 +49,7 @@ router.get('/setting', function(req, res, next) {
     });
 });
 
-router.get('/:mac', function(req, res) {
+router.get('/:mac', ensureAuthenticated, function(req, res) {
     deviceProvider.findByMac('device', req.params.mac, function(error, device) {
         res.render('router_field', {
             title: device.mac,
@@ -113,5 +118,10 @@ router.post('/:mac/reboot', function(req, res) {
     });
 	res.redirect('/router');
 });
+
+function ensureAuthenticated(req, res, next) {
+    if(req.isAuthenticated()) { return next(); }
+    res.redirect('/');
+}
 
 module.exports = router;
