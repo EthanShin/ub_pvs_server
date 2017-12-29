@@ -44,7 +44,7 @@ router.post('/upload', function(req, res) {
 			var columnRouter = [];
 			var columnAP = [];
 		    for(let z in worksheet) {
-				if(z.toString()[0] === 'G') {
+				if(z.toString()[0] === 'H') {
 					columnRouter.push(worksheet[z].v);
 				} else if(z.toString()[0] === 'D') {
 					columnAP.push(worksheet[z].v);
